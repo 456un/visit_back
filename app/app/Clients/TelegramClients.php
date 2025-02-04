@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Clients;
 
+use Dotenv\Dotenv;
 use Exception;
 use Illuminate\Support\Facades\Http;
 
 class TelegramClients
 {
-    private const string TELEGRAM_URL = 'https://api.telegram.org';
+    private const TELEGRAM_URL = 'https://api.telegram.org';
 
     /** @var string $token */
     private string $token;
