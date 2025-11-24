@@ -18,6 +18,12 @@ class TelegramClients
     /** @var string $chatId */
     private string $chatId;
 
+    /** @var string $telegramProxyIp */
+    private string $telegramProxyIp;
+
+    /** @var string $telegramProxyPort */
+    private string $telegramProxyPort;
+
     /**
      * @throws Exception
      */
@@ -29,6 +35,9 @@ class TelegramClients
         if (empty($this->token) || empty($this->chatId)) {
             throw new Exception('Telegram Clients Config Error');
         }
+
+        $this->telegramProxyIp = env('TELEGRAM_PROXY_IP');
+        $this->telegramProxyPort = env('TELEGRAM_PROXY_PORT');
     }
 
     /**
@@ -40,6 +49,12 @@ class TelegramClients
     public function sendMessage(string $message, ?string $email, ?string $telegram): bool
     {
         $url = self::TELEGRAM_URL . "/bot{$this->token}/sendMessage";
+
+        if (!empty($this->telegramProxyIp) && !empty($this->telegramProxyPort)) {
+            Http::withOptions([
+                'proxy' => "socks5://{$this->telegramProxyIp}:{$this->telegramProxyPort}",
+            ]);
+        }
 
         $response = Http::post($url, [
             'chat_id' => $this->chatId,
