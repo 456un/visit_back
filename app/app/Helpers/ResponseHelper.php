@@ -12,11 +12,18 @@ class ResponseHelper
     /**
      * @param array $data
      * @param bool $success
+     * @param string|null $error
      * @param int $status
      * @return JsonResponse
      */
-    public static function response(array $data, bool $success, int $status = Response::HTTP_OK): JsonResponse
-    {
+    public static function response(
+        array $data,
+        bool $success,
+        ?string $error = null,
+        int $status = Response::HTTP_OK
+    ): JsonResponse {
+        $data['error'] = $error;
+
         return response()->json(
             [
                 'success' => $success,
