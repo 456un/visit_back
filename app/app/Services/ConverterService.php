@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Converter\Dto\ShaHashDto;
 use App\Converter\PostGisConverter;
+use App\Converter\ShaConverter;
 use App\Error\ErrorTrait;
 
 class ConverterService
@@ -50,6 +52,25 @@ class ConverterService
 
         return [
             'wkbHex' => $wkb,
+        ];
+    }
+
+    /**
+     * @param ShaHashDto $shaHashDto
+     * @return array
+     */
+    public function shaHash(ShaHashDto $shaHashDto): array
+    {
+        $shaConverter = new ShaConverter();
+        $hash = $shaConverter->getHash($shaHashDto);
+
+        if ($shaConverter->isError()) {
+            $this->setError($shaConverter->getError());
+            return [];
+        }
+
+        return [
+            'sha' => $hash,
         ];
     }
 }

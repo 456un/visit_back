@@ -11,3 +11,5 @@ Route::post('/telegram/send', [TelegramController::class, 'sendTelegramMessage']
 
 Route::post('/service/postgis/decode', [ConverterController::class, 'postGisDecode']);
 Route::post('/service/postgis/encode', [ConverterController::class, 'postGisEncode']);
+
+Route::post('/service/sha/hash', [ConverterController::class, 'shaHash']);

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
+use App\Converter\Dto\ShaHashDto;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostGisDecodeRequest;
 use App\Http\Requests\PostGisEncodeRequest;
+use App\Http\Requests\ShaHashRequest;
 use App\Services\ConverterService;
 use Illuminate\Http\JsonResponse;
 
@@ -45,6 +47,32 @@ class ConverterController extends Controller
     {
         return ResponseHelper::response(
             $this->converterService->postGisEncode((float)$request->lat, (float)$request->lon),
+            !$this->converterService->isError(),
+            $this->converterService->getError(),
+        );
+    }
+
+    /**
+     * @param ShaHashRequest $request
+     * @return JsonResponse
+     */
+    public function shaHash(ShaHashRequest $request): JsonResponse
+    {
+        $isHmac = filter_var($request->isHmac, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        if (is_null($isHmac)) {
+            return ResponseHelper::response([], false, 'Параметр isHmac не валиден');
+        }
+
+        $shaHashDto = (new ShaHashDto())
+            ->setAlgo($request->algo)
+            ->setData($request->data)
+            ->setIsHmac($isHmac)
+            ->setTypeHmac($request->typeHmac)
+            ->setHmac($request->hmac)
+            ->setFileHmac($request->fileHmac);
+
+        return ResponseHelper::response(
+            $this->converterService->shaHash($shaHashDto),
             !$this->converterService->isError(),
             $this->converterService->getError(),
         );
