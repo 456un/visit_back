@@ -37,6 +37,14 @@ services:
     networks:
       - visit
 
+  mail-mozz:
+    image: mailhog/mailhog
+    ports:
+      - "8025:8025" # веб-интерфейс
+      - "1025:1025" # SMTP
+    networks:
+      - visit
+
 networks:
   visit:
     driver: bridge
