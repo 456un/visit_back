@@ -8,6 +8,7 @@ services:
     working_dir: /var/www
     volumes:
       - ./app:/var/www
+      - ./docker/sqllite:/var/sqllite
     networks:
       - visit
 
@@ -37,11 +38,11 @@ services:
     networks:
       - visit
 
-  mail-mozz:
+  visit-mail:
     image: mailhog/mailhog
     ports:
-      - "8025:8025" # веб-интерфейс
-      - "1025:1025" # SMTP
+      - "8026:8025" # веб-интерфейс
+      - "1026:1025" # SMTP
     networks:
       - visit
 
