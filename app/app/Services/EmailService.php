@@ -44,6 +44,28 @@ class EmailService
     }
 
     /**
+     * @param string $email
+     * @return bool
+     */
+    public function addEmail(string $email): bool
+    {
+        try {
+            return $this->emailsRepository->addEmail($email);
+        } catch (Exception) {
+            return false;
+        }
+    }
+
+    /**
+     * @param string $email
+     * @return bool
+     */
+    public function isExistsEmail(string $email): bool
+    {
+        return $this->emailsRepository->isExists($email);
+    }
+
+    /**
      * Добавляем email в БД
      *
      * @param string[] $emails

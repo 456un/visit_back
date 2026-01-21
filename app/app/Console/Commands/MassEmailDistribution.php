@@ -90,10 +90,19 @@ class MassEmailDistribution extends Command
         }
 
         foreach ($emails as $email) {
+            if ($this->emailService->isExistsEmail($email)) {
+                $this->warn($email . ' - repeat');
+                continue;
+            }
+
             if (!$this->emailService->sendEmail($email, $title, $body)) {
                 $this->warn($email . ' - error');
             } else {
                 $this->info($email . ' - success');
+            }
+
+            if (!$this->emailService->addEmail($email)) {
+                $this->error("Ошибка добавления {$email} в БД");
             }
         }
 
