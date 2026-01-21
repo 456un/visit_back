@@ -13,18 +13,6 @@ class MassEmailDistribution extends Command
     private const DIR_EMAIL_FILE = __DIR__ . '/../../../email/emails/';
     private const DIR_TEXT_FILE = __DIR__ . '/../../../email/text/';
 
-    /** @var EmailService $emailService */
-    private EmailService $emailService;
-
-    /**
-     * @param EmailService $emailService
-     */
-    public function __construct(EmailService $emailService) {
-        parent::__construct();
-
-        $this->emailService = $emailService;
-    }
-
     /**
      * The name and signature of the console command.
      *
@@ -40,6 +28,18 @@ class MassEmailDistribution extends Command
      * @var string
      */
     protected $description = 'Массовая рассылка по email';
+
+    /** @var EmailService $emailService */
+    private EmailService $emailService;
+
+    /**
+     * @param EmailService $emailService
+     */
+    public function __construct(EmailService $emailService) {
+        parent::__construct();
+
+        $this->emailService = $emailService;
+    }
 
     /**
      * Execute the console command.
