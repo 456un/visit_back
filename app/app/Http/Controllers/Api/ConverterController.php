@@ -12,6 +12,7 @@ use App\Http\Requests\PostGisEncodeRequest;
 use App\Http\Requests\ShaHashRequest;
 use App\Services\ConverterService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class ConverterController extends Controller
 {
@@ -73,6 +74,19 @@ class ConverterController extends Controller
 
         return ResponseHelper::response(
             $this->converterService->shaHash($shaHashDto),
+            !$this->converterService->isError(),
+            $this->converterService->getError(),
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function argon2Hash(Request $request): JsonResponse
+    {
+        return ResponseHelper::response(
+            $this->converterService->argon2Hash(),
             !$this->converterService->isError(),
             $this->converterService->getError(),
         );

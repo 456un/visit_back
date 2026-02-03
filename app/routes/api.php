@@ -13,3 +13,5 @@ Route::post('/service/postgis/decode', [ConverterController::class, 'postGisDeco
 Route::post('/service/postgis/encode', [ConverterController::class, 'postGisEncode']);
 
 Route::post('/service/sha/hash', [ConverterController::class, 'shaHash']);
+
+Route::post('/service/argon/hash', [ConverterController::class, 'argon2Hash']);

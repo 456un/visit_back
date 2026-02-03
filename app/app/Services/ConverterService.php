@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Converter\ArgonConverter;
 use App\Converter\Dto\ShaHashDto;
 use App\Converter\PostGisConverter;
 use App\Converter\ShaConverter;
@@ -71,6 +72,24 @@ class ConverterService
 
         return [
             'sha' => $hash,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function argon2Hash(): array
+    {
+        $argon2Converter = new ArgonConverter();
+        $hash = $argon2Converter->getHash();
+
+        if ($argon2Converter->isError()) {
+            $this->setError($argon2Converter->getError());
+            return [];
+        }
+
+        return [
+            'argon2' => $hash,
         ];
     }
 }
