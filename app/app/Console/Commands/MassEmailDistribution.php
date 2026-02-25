@@ -98,7 +98,12 @@ class MassEmailDistribution extends Command
                 continue;
             }
 
-            $bodySender = str_replace('%PS%', "P.S. {$ps}", $body);
+            if (empty($ps)) {
+                $bodySender = str_replace('%PS%', "", $body);
+            } else {
+                $bodySender = str_replace('%PS%', "P.S. {$ps}", $body);
+            }
+
             $bodySender = str_replace("\n\n\n\n", "\n\n", $bodySender);
 
             if (!$this->emailService->sendEmail($email, $title, $bodySender)) {
