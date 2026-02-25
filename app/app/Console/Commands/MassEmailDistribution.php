@@ -89,16 +89,22 @@ class MassEmailDistribution extends Command
             return self::FAILURE;
         }
 
-        foreach ($emails as $email) {
+        foreach ($emails as $emailData) {
+            $email = $emailData['email'];
+            $ps = $emailData['ps'] ?? '';
+
             if ($this->emailService->isExistsEmail($email)) {
                 $this->warn($email . ' - repeat');
                 continue;
             }
 
-            if (!$this->emailService->sendEmail($email, $title, $body)) {
+            $bodySender = str_replace('%PS%', "P.S. {$ps}", $body);
+            $bodySender = str_replace("\n\n\n\n", "\n\n", $bodySender);
+
+            if (!$this->emailService->sendEmail($email, $title, $bodySender)) {
                 $this->warn($email . ' - error');
             } else {
-                $this->info($email . ' - success');
+                $this->info($email . ' - success, ps: ' . $ps);
             }
 
             if (!$this->emailService->addEmail($email)) {
@@ -136,7 +142,7 @@ class MassEmailDistribution extends Command
         $isFirst = true;
         $emails = [];
         foreach ($file as $row) {
-            if ($row === [null] || empty($row) || $isFirst) {
+            if ($row === [null, null] || empty($row) || $isFirst) {
                 $isFirst = false;
                 continue;
             }
@@ -144,7 +150,10 @@ class MassEmailDistribution extends Command
             $email = $row[0] ?? null;
 
             if (!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $emails[] = $email;
+                $emails[] = [
+                    'email' => $email,
+                    'ps' => $row[1] ?? null,
+                ];
             }
         }
 
