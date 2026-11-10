@@ -92,6 +92,7 @@ class MassEmailDistribution extends Command
         foreach ($emails as $emailData) {
             $email = $emailData['email'];
             $ps = $emailData['ps'] ?? '';
+            $url = $emailData['url'] ?? '';
 
             if ($this->emailService->isExistsEmail($email)) {
                 $this->warn($email . ' - repeat');
@@ -104,9 +105,17 @@ class MassEmailDistribution extends Command
                 $bodySender = str_replace('%PS%', "P.S. {$ps}", $body);
             }
 
+            if (empty($url)) {
+                $bodySender = str_replace('%DOMAIN%', "", $bodySender);
+                $titleSender = str_replace('%DOMAIN%', "", $title);
+            } else {
+                $bodySender = str_replace('%DOMAIN%', $url, $bodySender);
+                $titleSender = str_replace('%DOMAIN%', $url, $title);
+            }
+
             $bodySender = str_replace("\n\n\n\n", "\n\n", $bodySender);
 
-            if (!$this->emailService->sendEmail($email, $title, $bodySender)) {
+            if (!$this->emailService->sendEmail($email, $titleSender, $bodySender)) {
                 $this->warn($email . ' - error');
             } else {
                 $this->info($email . ' - success, ps: ' . $ps);
@@ -147,7 +156,7 @@ class MassEmailDistribution extends Command
         $isFirst = true;
         $emails = [];
         foreach ($file as $row) {
-            if ($row === [null, null] || empty($row) || $isFirst) {
+            if ($row === [null, null, null] || empty($row) || $isFirst) {
                 $isFirst = false;
                 continue;
             }
@@ -158,6 +167,7 @@ class MassEmailDistribution extends Command
                 $emails[] = [
                     'email' => $email,
                     'ps' => $row[1] ?? null,
+                    'url' => $row[2] ?? null,
                 ];
             }
         }
